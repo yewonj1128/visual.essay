@@ -9,8 +9,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-color: #000; /* Black background */
+    height: 100dvh; /* 모바일 안전 높이 */
+    background-color: #000;
     overflow: hidden;
     font-family: sans-serif;
 }
@@ -34,41 +34,33 @@ body {
     transform: scale(1.1);
 }
 
-.left-arrow {
-    margin-right: 20px;
-}
+.left-arrow { margin-right: 20px; }
+.right-arrow { margin-left: 20px; }
 
-.right-arrow {
-    margin-left: 20px;
-}
-
-/* Responsive Book Scaling */
+/* ---- RESPONSIVE BOOK ---- */
+/* A4 Ratio: width : height = 2 * 1 : 1.414 */
 .book-container {
     position: relative;
+    aspect-ratio: calc(2 * 1) / 1.414;  /* 펼친 A4 두 장 비율 */
 
-    /* 책 비율 유지: 2개의 A4 페이지(가로 2: 세로1.414) */
-    aspect-ratio: calc(1.414 * 2) / 1;
-
-    /* 화면 안에서 자동으로 가장 크게 맞춤 */
-    width: min(95vw, 95vh * (1.414 * 2));
+    width: min(95vw, 95vh * (2 / 1.414)); /* 화면 안에서 자동 최대값 */
     height: auto;
 
     perspective: 2000px;
-
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* 책의 비율 유지 */
+/* Book fills container exactly */
 .book {
-    width: min(90vw, 90vh * 1.4142);  /* A4 세로 2장 펼침 비율 */
-    height: calc(0.7071 * min(90vw, 90vh * 1.4142));
+    width: 100%;
+    height: 100%;
     position: relative;
     transform-style: preserve-3d;
 }
 
-/* Sheet Styles */
+/* ---- Sheet ---- */
 .sheet {
     position: absolute;
     top: 0;
@@ -80,7 +72,11 @@ body {
     transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-/* Page Styles */
+.sheet.flipped {
+    transform: rotateY(-180deg);
+}
+
+/* ---- Pages ---- */
 .page {
     position: absolute;
     top: 0;
@@ -89,28 +85,14 @@ body {
     height: 100%;
     backface-visibility: hidden;
     background-color: white;
-    
     border: 0.5px solid white;
     overflow: hidden;
 }
 
-/* Front face */
-.page.front {
-    z-index: 2;
-}
+.page.front { z-index: 2; }
+.page.back { transform: rotateY(180deg); }
 
-/* Back face rotated */
-.page.back {
-    transform: rotateY(180deg);
-    z-index: 1;
-}
-
-/* Flipped State */
-.sheet.flipped {
-    transform: rotateY(-180deg);
-}
-
-/* Page Images (pointer-events removed completely) */
+/* Page Images */
 .page-content {
     width: 100%;
     height: 100%;
@@ -118,19 +100,18 @@ body {
     display: block;
 }
 
-/* Audio should remain clickable */
+/* Audio should stay clickable */
 .audio-container {
     pointer-events: auto;
 }
 
-/* ---- MEDIA OVERLAY FIXED VERSION ---- */
-/* Prevent overlay from blocking page turns */
+/* ---- MEDIA OVERLAY ---- */
 .media-overlay {
     position: absolute;
-    background: transparent;
     z-index: 20;
+    background: transparent;
 
-    /* critical fix */
+    /* critical fix: overlay는 클릭 안먹음 */
     pointer-events: none;
 
     display: flex;
@@ -138,12 +119,12 @@ body {
     align-items: center;
 }
 
-/* Only iframe receives clicks */
+/* iframe은 클릭 가능 */
 .media-overlay iframe {
     pointer-events: auto;
 }
 
-/* Page 6 video */
+/* Page-specific positions */
 #page6-video-container {
     left: 50%;
     top: 35%;
@@ -152,7 +133,6 @@ body {
     aspect-ratio: 16/10;
 }
 
-/* Page 7 video */
 #page7-video-container {
     left: 50%;
     top: 75%;
@@ -161,7 +141,6 @@ body {
     aspect-ratio: 16/9;
 }
 
-/* Page 9 video */
 #page9-video-container {
     left: 50%;
     top: 50%;
@@ -170,7 +149,7 @@ body {
     aspect-ratio: 16/9;
 }
 
-/* Doljabi iframe overlay */
+/* ---- Doljabi Iframe ---- */
 .iframe-overlay {
     position: absolute;
     top: 0;
@@ -180,8 +159,6 @@ body {
     z-index: 2000;
     background: white;
     display: none;
-
-    border: 1px solid white;
 }
 
 .iframe-overlay.active {
