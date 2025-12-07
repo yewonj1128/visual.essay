@@ -1,0 +1,212 @@
+/* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #000; /* Black background */
+    overflow: hidden;
+    font-family: sans-serif;
+}
+
+/* 
+   Navigation Arrows 
+*/
+.nav-arrow {
+    background: none;
+    border: none;
+    color: white; /* White arrows */
+    font-size: 3rem;
+    cursor: pointer;
+    padding: 20px;
+    z-index: 1000;
+    opacity: 0.7;
+    transition: opacity 0.3s, transform 0.2s;
+    user-select: none;
+}
+
+.nav-arrow:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.left-arrow {
+    margin-right: 20px;
+}
+
+.right-arrow {
+    margin-left: 20px;
+}
+
+/* 
+   Book Container 
+   Spread view: 2x A4 width.
+   A4 Ratio: 210mm / 297mm ≈ 0.707
+   Let's set height to 90vh (fits screen)
+   Single Page Width = Height * 0.707
+   Spread Width = 2 * Single Page Width
+*/
+.book-container {
+    position: relative;
+    height: 90vh;
+    /* Aspect ratio calculation: 
+       Width = 90vh * 0.707 (single page) * 2 (spread) ≈ 1.27 * Height 
+       But to be safe and responsive let's use calc or JS, 
+       or just approximation. 
+       Let's stick to a fixed aspect ratio relative to height.
+    */
+    width: calc(90vh * 0.70707 * 2); 
+    max-width: 95vw; /* Safety constraint */
+    perspective: 2000px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 
+   The Book
+   Acts as the stage.
+*/
+.book {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+}
+
+/* 
+   Sheet Styles 
+   Each sheet contains a Front and a Back page.
+   Sheets are anchored on the spine (center of the book).
+   Since the container is the full spread width, the "center" is 50% left.
+*/
+.sheet {
+    position: absolute;
+    top: 0;
+    left: 50%; /* Spine location */
+    width: 50%; /* One page width */
+    height: 100%;
+    transform-origin: left center; /* Rotate around the spine */
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* 
+   Page (Front/Back) Styles 
+*/
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background-color: white;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.05); /* Subtle inner shadow */
+}
+
+/* Front face is default */
+.page.front {
+    z-index: 2;
+}
+
+/* Back face is rotated 180 initially inside the sheet so it faces 'backwards' 
+   Wait - standard flip:
+   If Sheet rotates -180deg:
+   Front (0deg) -> -180deg (Face down/away)
+   Back must be pre-rotated 180deg so when Sheet is -180deg, Back is 0deg (Face up)
+*/
+.page.back {
+    transform: rotateY(180deg);
+    z-index: 1;
+}
+
+/* 
+   Flipped State for Sheet
+*/
+.sheet.flipped {
+    transform: rotateY(-180deg);
+}
+
+/* Image styling */
+.page-content {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none; /* Allow clicks to pass through */
+}
+
+/* 
+   Interactions (Link / Video)
+   Need to ensure they are clickable.
+   When pointer-events: none is on image, these buttons need pointer-events: auto.
+*/
+.interactive-btn, .video-container {
+    pointer-events: auto; 
+}
+
+.interactive-btn {
+    position: absolute;
+    z-index: 10;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #000;
+    padding: 10px 20px;
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.3s, transform 0.2s;
+    font-size: 1rem;
+}
+
+.interactive-btn:hover {
+    background: #fff;
+    transform: scale(1.05);
+}
+
+/* Page 3 Link */
+#page3-link {
+    bottom: 15%;
+    right: 15%;
+}
+
+/* Page 11 Video */
+.video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+
+#page11-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    background: #000;
+}
+
+#page11-video.active {
+    display: block;
+}
+
+#page11-play-btn {
+    font-size: 1.5rem;
+    padding: 15px 30px;
+}
