@@ -1,11 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Configuration
     const totalSheets = 8;
-    // currentSheet represents the number of sheets currently flipped to the LEFT side.
-    // 0 = All sheets on right (Cover/Page 1 visible).
-    // 1 = Sheet 1 flipped (Page 2, 3 visible).
-    // ...
-    // 8 = All sheets flipped (Page 16 visible on left).
     let currentSheet = 0;
 
     // DOM Elements
@@ -16,42 +11,25 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const prevBtn = document.getElementById('prev-btn');
     const nextBtn = document.getElementById('next-btn');
+    const doljabiOverlay = document.getElementById('doljabi-overlay');
+    const page5Audio = document.getElementById('page5-audio');
 
-    const page3Link = document.getElementById('page3-link');
-    const page11PlayBtn = document.getElementById('page11-play-btn');
-    const page11Video = document.getElementById('page11-video');
+    // Fullscreen Video Elements
+    const fullscreenOverlay = document.getElementById('fullscreen-overlay');
+    const fullscreenVideo = document.getElementById('fullscreen-video');
+    const closeFullscreenBtn = document.getElementById('close-fullscreen');
+    const playButtons = document.querySelectorAll('.fullscreen-play-btn');
 
     // --- Z-Index Management ---
-    // Correct Z-Index is crucial for the 3D stack effect.
-    // Right stack (Unflipped): Sheet 1 (Top) > Sheet 2 > ...
-    // Left stack (Flipped): Sheet 1 (Bottom) < Sheet 2 < ... (Wait, logic check)
-    //
-    // Scenario: 
-    // Start (0 flipped): 
-    //   Right: S1(z8), S2(z7), S3(z6)... 
-    //   Left: Empty.
-    // Flip S1 (1 flipped):
-    //   Right: S2(z7) is now top of right.
-    //   Left: S1.
-    // Flip S2 (2 flipped):
-    //   Right: S3(z6).
-    //   Left: S2 is on top of S1. So S2 > S1.
-    //
-    // So:
-    // Unflipped sheets (Right): z-index = totalSheets - index
-    // Flipped sheets (Left): z-index = index
-    
     function updateZIndexes() {
         sheets.forEach((sheet, index) => {
             const sheetNum = index + 1;
             if (sheetNum <= currentSheet) {
-                // Sheet is flipped (Left side)
-                // Logic: Sheet 1 (index 0) z=1. Sheet 2 (index 1) z=2.
+                // Flipped (Left)
                 sheet.style.zIndex = sheetNum;
             } else {
-                // Sheet is unflipped (Right side)
-                // Logic: Sheet 1 (index 0) z=8. Sheet 2 (index 1) z=7.
-                sheet.style.zIndex = totalSheets - index + 1; // +1 to ensure overlap
+                // Unflipped (Right)
+                sheet.style.zIndex = totalSheets - index + 1;
             }
         });
     }
@@ -59,25 +37,64 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial call
     updateZIndexes();
 
+    // --- Overlay & Media Management ---
+    function checkMediaAndOverlays() {
+        // 1. Doljabi Overlay (Pages 14-15)
+        // Visible when Sheet 7 is Flipped (Left), Sheet 8 Unflipped (Right) -> currentSheet === 7
+        if (currentSheet === 7) {
+            setTimeout(() => {
+                if (currentSheet === 7) doljabiOverlay.classList.add('active');
+            }, 600);
+        } else {
+            doljabiOverlay.classList.remove('active');
+        }
+
+        // 2. Page 5 Audio (Interview.mp4)
+        // Page 5 is on Sheet 3 Front. Visible when currentSheet === 2.
+        if (currentSheet !== 2) {
+            if (page5Audio && !page5Audio.paused) {
+                page5Audio.pause();
+            }
+        }
+
+        // 3. Page 7 GIF Auto-Animation
+        // Page 7 is on Sheet 4 Front.
+        // It is visible when Sheet 3 is Flipped (Left) and Sheet 4 is Unflipped (Right).
+        // This corresponds to currentSheet === 3.
+        if (currentSheet === 3) {
+            const page7GifContainer = document.getElementById('page7-gif-container');
+            const gif = page7GifContainer ? page7GifContainer.querySelector('img') : null;
+            if (gif) {
+                // Force restart of GIF by updating src with timestamp
+                const cleanSrc = gif.src.split('?')[0];
+                gif.src = cleanSrc + '?t=' + new Date().getTime();
+            }
+        }
+    }
+
     // --- Navigation Functions ---
 
     function goNext() {
         if (currentSheet < totalSheets) {
+            doljabiOverlay.classList.remove('active');
+            
             currentSheet++;
-            const sheet = sheets[currentSheet - 1]; // Array index is 0-based
+            const sheet = sheets[currentSheet - 1];
             sheet.classList.add('flipped');
             updateZIndexes();
-            console.log(`Flipped Sheet ${currentSheet} to Left`);
+            checkMediaAndOverlays();
         }
     }
 
     function goPrev() {
         if (currentSheet > 0) {
+            doljabiOverlay.classList.remove('active');
+
             const sheet = sheets[currentSheet - 1];
             sheet.classList.remove('flipped');
             currentSheet--;
             updateZIndexes();
-            console.log(`Flipped Sheet ${currentSheet + 1} back to Right`);
+            checkMediaAndOverlays();
         }
     }
 
@@ -94,11 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
         goPrev();
     });
 
-    // Global Click (Left/Right side of screen)
+    // Global Click
     document.addEventListener('click', (e) => {
-        // Ignore clicks on buttons/interactive elements to avoid double triggers
-        // (Handled by stopPropagation on those elements, but good to be safe)
-        
+        // If fullscreen overlay is active, ignore book navigation clicks
+        if (fullscreenOverlay.classList.contains('active')) return;
+
         const windowWidth = window.innerWidth;
         const clickX = e.clientX;
 
@@ -111,6 +128,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Keyboard Navigation
     document.addEventListener('keydown', (e) => {
+        // If fullscreen overlay is active, ignore navigation or handle escape
+        if (fullscreenOverlay.classList.contains('active')) {
+            if (e.key === 'Escape') {
+                closeFullscreen();
+            }
+            return;
+        }
+
         if (e.key === 'ArrowRight') {
             goNext();
         } else if (e.key === 'ArrowLeft') {
@@ -118,33 +143,58 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Specific Interaction Logic ---
+    // --- Fullscreen Video Logic ---
 
-    // Page 3 Link
-    if (page3Link) {
-        page3Link.addEventListener('click', (e) => {
-            e.stopPropagation(); 
-            // Allow default link behavior
+    // Open Video
+    playButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent page turn
+            const videoSrc = btn.getAttribute('data-video');
+            if (videoSrc) {
+                // Ensure playsinline is set for better mobile/compatibility support
+                fullscreenVideo.setAttribute('playsinline', '');
+                fullscreenVideo.setAttribute('webkit-playsinline', '');
+                
+                fullscreenVideo.src = videoSrc;
+                fullscreenVideo.load(); // Essential for reloading source
+                
+                fullscreenOverlay.classList.add('active');
+                
+                // Play handling
+                const playPromise = fullscreenVideo.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        // Playback started
+                    }).catch(error => {
+                        console.error("Video play failed:", error);
+                        // Optional: Show a "Tap to Play" button in overlay if autoplay is denied
+                    });
+                }
+            }
         });
+    });
+
+    // Close Video Function
+    function closeFullscreen() {
+        fullscreenVideo.pause();
+        fullscreenVideo.src = ""; 
+        fullscreenVideo.load();
+        fullscreenOverlay.classList.remove('active');
     }
 
-    // Page 11 Video
-    if (page11PlayBtn && page11Video) {
-        page11PlayBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            page11Video.classList.add('active');
-            page11Video.play();
-            page11PlayBtn.style.display = 'none';
-        });
+    // Close Button
+    closeFullscreenBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeFullscreen();
+    });
 
-        page11Video.addEventListener('ended', () => {
-            page11Video.classList.remove('active');
-            page11PlayBtn.style.display = 'block';
-        });
-
-        // Ensure video controls or clicks don't flip page
-        page11Video.addEventListener('click', (e) => {
+    // Prevent propagation on interactive elements
+    const mediaElements = document.querySelectorAll('audio, .media-overlay, .iframe-overlay');
+    mediaElements.forEach(el => {
+        el.addEventListener('click', (e) => {
             e.stopPropagation();
         });
-    }
+    });
+
 });
+
