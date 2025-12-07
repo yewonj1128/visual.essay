@@ -12,6 +12,11 @@
     <button id="prev-btn" class="nav-arrow left-arrow">❮</button>
 
     <div class="book-container">
+        <!-- Iframe Overlay for Pages 14-15 -->
+        <div id="doljabi-overlay" class="iframe-overlay">
+            <iframe src="dol-jabi/index.html" frameborder="0"></iframe>
+        </div>
+
         <div id="book" class="book">
             <!-- Sheet 1: Page 1 & 2 -->
             <div class="sheet" id="sheet-1" style="z-index: 8;">
@@ -27,10 +32,7 @@
             <div class="sheet" id="sheet-2" style="z-index: 7;">
                 <div class="page front">
                     <img src="images/page3.jpg" alt="Page 3" class="page-content">
-                    <!-- Page 3 Interaction: Link -->
-                    <a href="https://www.google.com" target="_blank" class="interactive-btn link-btn" id="page3-link">
-                        Open Link
-                    </a>
+                    <!-- Link removed as requested -->
                 </div>
                 <div class="page back">
                     <img src="images/page4.jpg" alt="Page 4" class="page-content">
@@ -41,9 +43,24 @@
             <div class="sheet" id="sheet-3" style="z-index: 6;">
                 <div class="page front">
                     <img src="images/page5.jpg" alt="Page 5" class="page-content">
+                    <!-- Page 5: Audio Player -->
+                    <div class="audio-container" style="position: absolute; top: 5%; left: 0; width: 100%; display: flex; justify-content: center;">
+                        <audio id="page5-audio" controls style="width: 80%;">
+                            <source src="interview.mp4" type="audio/mp4">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
                 </div>
                 <div class="page back">
                     <img src="images/page6.jpg" alt="Page 6" class="page-content">
+                    <!-- Page 6: YouTube Video Embed -->
+                    <div id="page6-video-container" class="media-overlay">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/ApZgLZaIOKc" 
+                                title="YouTube video player" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
                 </div>
             </div>
 
@@ -51,6 +68,14 @@
             <div class="sheet" id="sheet-4" style="z-index: 5;">
                 <div class="page front">
                     <img src="images/page7.jpg" alt="Page 7" class="page-content">
+                    <!-- Page 7: YouTube Video Embed -->
+                    <div id="page7-video-container" class="media-overlay">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/8YsbeVjVF-U" 
+                                title="YouTube video player" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
                 </div>
                 <div class="page back">
                     <img src="images/page8.jpg" alt="Page 8" class="page-content">
@@ -61,6 +86,14 @@
             <div class="sheet" id="sheet-5" style="z-index: 4;">
                 <div class="page front">
                     <img src="images/page9.jpg" alt="Page 9" class="page-content">
+                    <!-- Page 9: YouTube Video Embed -->
+                    <div id="page9-video-container" class="media-overlay">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/itiCQz7ba6c" 
+                                title="YouTube video player" frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
                 </div>
                 <div class="page back">
                     <img src="images/page10.jpg" alt="Page 10" class="page-content">
@@ -71,14 +104,7 @@
             <div class="sheet" id="sheet-6" style="z-index: 3;">
                 <div class="page front">
                     <img src="images/page11.jpg" alt="Page 11" class="page-content">
-                    <!-- Page 11 Interaction: Video -->
-                    <div class="video-container">
-                        <video id="page11-video" width="100%" height="100%" playsinline controls>
-                            <source src="images/page11.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                        <button class="interactive-btn play-btn" id="page11-play-btn">▶ Play</button>
-                    </div>
+                    <!-- Button removed -->
                 </div>
                 <div class="page back">
                     <img src="images/page12.jpg" alt="Page 12" class="page-content">
@@ -108,6 +134,14 @@
     </div>
 
     <button id="next-btn" class="nav-arrow right-arrow">❯</button>
+
+    <!-- Global Fullscreen Video Overlay -->
+    <div id="fullscreen-overlay" class="fullscreen-overlay">
+        <button id="close-fullscreen">✕</button>
+        <video id="fullscreen-video" controls>
+            Your browser does not support the video tag.
+        </video>
+    </div>
 
     <script src="script.js"></script>
 </body>
