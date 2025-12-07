@@ -1,40 +1,52 @@
+/* Reset and Base Styles */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* layout */
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background: #000;
+    background-color: #000; /* Black background */
     overflow: hidden;
     font-family: sans-serif;
 }
 
-/* arrows */
+/* Navigation Arrows */
 .nav-arrow {
     background: none;
     border: none;
-    color: white;
+    color: white; /* White arrows */
     font-size: 3rem;
     cursor: pointer;
     padding: 20px;
     z-index: 1000;
     opacity: 0.7;
+    transition: opacity 0.3s, transform 0.2s;
+    user-select: none;
 }
 
-.left-arrow { margin-right: 20px; }
-.right-arrow { margin-left: 20px; }
+.nav-arrow:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
 
-/* book layout */
+.left-arrow {
+    margin-right: 20px;
+}
+
+.right-arrow {
+    margin-left: 20px;
+}
+
+/* Book Container */
 .book-container {
     position: relative;
     height: 90vh;
-    width: calc(90vh * 0.70707 * 2);
+    width: calc(90vh * 0.70707 * 2); 
     max-width: 95vw;
     perspective: 2000px;
     display: flex;
@@ -42,6 +54,7 @@ body {
     align-items: center;
 }
 
+/* The Book */
 .book {
     position: relative;
     width: 100%;
@@ -49,93 +62,149 @@ body {
     transform-style: preserve-3d;
 }
 
+/* Sheet Styles */
 .sheet {
     position: absolute;
     top: 0;
-    left: 50%;
-    width: 50%;
+    left: 50%; /* Spine location */
+    width: 50%; /* One page width */
     height: 100%;
-    transform-origin: left center;
+    transform-origin: left center; /* Rotate around the spine */
     transform-style: preserve-3d;
-    transition: transform 0.8s ease;
+    transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
+/* Page (Front/Back) Styles */
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background-color: white;
+    /* Subtle border for black pages separation */
+    border: 0.5px solid white; 
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* Front face */
+.page.front {
+    z-index: 2;
+}
+
+/* Back face rotated */
+.page.back {
+    transform: rotateY(180deg);
+    z-index: 1;
+}
+
+/* Flipped State */
 .sheet.flipped {
     transform: rotateY(-180deg);
 }
 
-.page {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    background: white;
-    border: 0.5px solid white;
-    overflow: hidden;
-}
-
-.page.back { transform: rotateY(180deg); }
-
+/* Page Images */
 .page-content {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    pointer-events: none; /* Allow clicks to pass through */
 }
 
-/* media overlays */
+/* Interactive Elements */
+.interactive-btn, .audio-container, .media-overlay, .fullscreen-play-btn {
+    pointer-events: auto; 
+}
+
+/* Media Overlay */
 .media-overlay {
     position: absolute;
-    z-index: 20;
     background: transparent;
-    pointer-events: none;
+    z-index: 20;
     display: flex;
     justify-content: center;
     align-items: center;
+    border: none;
+    outline: none;
 }
 
-.media-overlay iframe {
-    pointer-events: auto;
+/* Page 7 GIF cleanup (안 쓰면 무시해도 됨) */
+#page7-gif-container img {
+    border: none;
+    outline: none;
 }
 
-/* video positions */
+/* Fullscreen Play Button (안 쓰면 무시해도 됨) */
+.fullscreen-play-btn {
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid white;
+    color: white;
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s, background 0.3s;
+}
+
+.fullscreen-play-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
+    transform: scale(1.1);
+}
+
+/* Page 6 Video Container */
 #page6-video-container {
     left: 50%;
     top: 35%;
     transform: translate(-50%, -50%);
     width: 90%;
-    aspect-ratio: 16/9;
+    aspect-ratio: 16/10;
+    height: auto;
 }
 
+/* Page 7 Video Container */
 #page7-video-container {
     left: 50%;
     top: 75%;
     transform: translate(-50%, -50%);
     width: 90%;
     aspect-ratio: 16/9;
+    height: auto;
 }
 
+/* Page 9 Video Container */
 #page9-video-container {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     width: 90%;
     aspect-ratio: 16/9;
+    height: auto;
 }
 
-/* doljabi */
+/* Iframe Overlay for Spread 14-15 */
 .iframe-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    display: none;
-    background: white;
     z-index: 2000;
+    background: white; 
+    display: none; 
+    border: 1px solid white; 
+    box-sizing: border-box;
 }
 
-.iframe-overlay.active { display: block; }
+.iframe-overlay.active {
+    display: block;
+}
 
 .iframe-overlay iframe {
     width: 100%;
@@ -143,27 +212,45 @@ body {
     border: none;
 }
 
-/* fullscreen */
+/* Global Fullscreen Video Overlay */
 .fullscreen-overlay {
     position: fixed;
-    top:0; left:0;
-    width:100vw; height:100vh;
-    background:black;
-    display:none;
-    justify-content:center;
-    align-items:center;
-    z-index:9999;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-.fullscreen-overlay.active { display:flex; }
+.fullscreen-overlay.active {
+    display: flex;
+}
+
+.fullscreen-overlay video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
 
 #close-fullscreen {
-    position:absolute;
-    top:20px; right:20px;
-    font-size:2rem;
-    background:none;
-    border:none;
-    color:white;
-    cursor:pointer;
-    z-index:10000;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 10000;
+    border-radius: 5px;
+}
+
+#close-fullscreen:hover {
+    background: rgba(255, 255, 255, 0.5);
 }
