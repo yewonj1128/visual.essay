@@ -37,26 +37,42 @@ body {
 .left-arrow { margin-right: 20px; }
 .right-arrow { margin-left: 20px; }
 
-/* ---- RESPONSIVE BOOK ---- */
-/* A4 Ratio: width : height = 2 * 1 : 1.414 */
-.book-container {
-    position: relative;
-    aspect-ratio: calc(2 * 1) / 1.414;  /* 펼친 A4 두 장 비율 */
+/* ---- GLOBAL RESPONSIVE FIX FOR IOS ---- */
 
-    width: min(95vw, 95vh * (2 / 1.414)); /* 화면 안에서 자동 최대값 */
-    height: auto;
-
-    perspective: 2000px;
+/* 화면 전체를 차지하는 래퍼 */
+.page-wrapper {
+    width: 100vw;
+    height: 100dvh; /* iOS Safari도 정확하게 계산되는 단위 */
     display: flex;
     justify-content: center;
     align-items: center;
+    background: black;
+    overflow: hidden;
 }
 
-/* Book fills container exactly */
+/* 책을 감싸는 컨테이너 - 비율 유지용 */
+.book-container {
+    position: relative;
+
+    /* 종이책 펼친 비율 = (A4 세로 × 2) / A4 가로 = 2.828 */
+    aspect-ratio: 2.828 / 1;
+
+    /* 화면을 벗어나지 않도록 */
+    width: min(95vw, 95vh * 2.828);
+    height: auto;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    perspective: 2000px;
+}
+
+/* 내부 실제 책 오브젝트 */
 .book {
+    position: relative;
     width: 100%;
     height: 100%;
-    position: relative;
     transform-style: preserve-3d;
 }
 
