@@ -111,7 +111,6 @@ body {
     height: 100%;
     object-fit: cover;
     display: block;
-    pointer-events: none;
 }
 
 /* Interactive elements that should accept clicks */
