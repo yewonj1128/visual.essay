@@ -42,14 +42,22 @@ body {
     margin-left: 20px;
 }
 
+/* Responsive Book Scaling */
 .book-container {
     position: relative;
-    width: 100vw;
-    height: 100vh;
+
+    /* 책 비율 유지: 2개의 A4 페이지(가로 2: 세로1.414) */
+    aspect-ratio: calc(1.414 * 2) / 1;
+
+    /* 화면 안에서 자동으로 가장 크게 맞춤 */
+    width: min(95vw, 95vh * (1.414 * 2));
+    height: auto;
+
+    perspective: 2000px;
+
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* 절대 넘치지 않도록! */
 }
 
 /* 책의 비율 유지 */
