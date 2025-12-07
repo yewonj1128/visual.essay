@@ -1,21 +1,21 @@
-/* Reset and Base Styles */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
+/* layout */
 body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;  
-    background-color: #000;
+    height: 100vh;
+    background: #000;
     overflow: hidden;
     font-family: sans-serif;
 }
 
-/* Navigation Arrows */
+/* arrows */
 .nav-arrow {
     background: none;
     border: none;
@@ -25,32 +25,23 @@ body {
     padding: 20px;
     z-index: 1000;
     opacity: 0.7;
-    transition: opacity 0.3s, transform 0.2s;
-    user-select: none;
-}
-
-.nav-arrow:hover {
-    opacity: 1;
-    transform: scale(1.1);
 }
 
 .left-arrow { margin-right: 20px; }
 .right-arrow { margin-left: 20px; }
 
-/* Book Container */
+/* book layout */
 .book-container {
     position: relative;
     height: 90vh;
-    width: calc(90vh * 0.70707 * 2); /* A4 aspect ratio × spread */
+    width: calc(90vh * 0.70707 * 2);
     max-width: 95vw;
     perspective: 2000px;
-
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Book */
 .book {
     position: relative;
     width: 100%;
@@ -58,7 +49,6 @@ body {
     transform-style: preserve-3d;
 }
 
-/* Sheet */
 .sheet {
     position: absolute;
     top: 0;
@@ -67,31 +57,25 @@ body {
     height: 100%;
     transform-origin: left center;
     transform-style: preserve-3d;
-    transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
+    transition: transform 0.8s ease;
 }
 
-/* Page */
-.page {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    background-color: white;
-    border: 0.5px solid white;
-    overflow: hidden;
-}
-
-.page.front { z-index: 2; }
-.page.back { transform: rotateY(180deg); }
-
-/* Flipped */
 .sheet.flipped {
     transform: rotateY(-180deg);
 }
 
-/* Page Images */
+.page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    background: white;
+    border: 0.5px solid white;
+    overflow: hidden;
+}
+
+.page.back { transform: rotateY(180deg); }
+
 .page-content {
     width: 100%;
     height: 100%;
@@ -99,19 +83,12 @@ body {
     display: block;
 }
 
-/* Audio clickable */
-.audio-container {
-    pointer-events: auto;
-}
-
-/* Media Overlay */
+/* media overlays */
 .media-overlay {
     position: absolute;
-    background: transparent;
     z-index: 20;
-
+    background: transparent;
     pointer-events: none;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -121,12 +98,13 @@ body {
     pointer-events: auto;
 }
 
+/* video positions */
 #page6-video-container {
     left: 50%;
     top: 35%;
     transform: translate(-50%, -50%);
     width: 90%;
-    aspect-ratio: 16/10;
+    aspect-ratio: 16/9;
 }
 
 #page7-video-container {
@@ -145,24 +123,47 @@ body {
     aspect-ratio: 16/9;
 }
 
-/* Doljabi overlay */
+/* doljabi */
 .iframe-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 2000;
-    background: white;
     display: none;
+    background: white;
+    z-index: 2000;
 }
 
-.iframe-overlay.active {
-    display: block;
-}
+.iframe-overlay.active { display: block; }
 
 .iframe-overlay iframe {
     width: 100%;
     height: 100%;
     border: none;
+}
+
+/* fullscreen */
+.fullscreen-overlay {
+    position: fixed;
+    top:0; left:0;
+    width:100vw; height:100vh;
+    background:black;
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+}
+
+.fullscreen-overlay.active { display:flex; }
+
+#close-fullscreen {
+    position:absolute;
+    top:20px; right:20px;
+    font-size:2rem;
+    background:none;
+    border:none;
+    color:white;
+    cursor:pointer;
+    z-index:10000;
 }
