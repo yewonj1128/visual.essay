@@ -15,13 +15,11 @@ body {
     font-family: sans-serif;
 }
 
-/* 
-   Navigation Arrows 
-*/
+/* Navigation Arrows */
 .nav-arrow {
     background: none;
     border: none;
-    color: white; /* White arrows */
+    color: white;
     font-size: 3rem;
     cursor: pointer;
     padding: 20px;
@@ -44,13 +42,11 @@ body {
     margin-left: 20px;
 }
 
-/* 
-   Book Container 
-*/
+/* Book Container */
 .book-container {
     position: relative;
     height: 90vh;
-    width: calc(90vh * 0.70707 * 2); 
+    width: calc(90vh * 0.70707 * 2);
     max-width: 95vw;
     perspective: 2000px;
     display: flex;
@@ -58,9 +54,7 @@ body {
     align-items: center;
 }
 
-/* 
-   The Book
-*/
+/* The Book */
 .book {
     position: relative;
     width: 100%;
@@ -68,23 +62,19 @@ body {
     transform-style: preserve-3d;
 }
 
-/* 
-   Sheet Styles 
-*/
+/* Sheet Styles */
 .sheet {
     position: absolute;
     top: 0;
-    left: 50%; /* Spine location */
-    width: 50%; /* One page width */
+    left: 50%;
+    width: 50%;
     height: 100%;
-    transform-origin: left center; /* Rotate around the spine */
+    transform-origin: left center;
     transform-style: preserve-3d;
     transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-/* 
-   Page (Front/Back) Styles 
-*/
+/* Page Styles */
 .page {
     position: absolute;
     top: 0;
@@ -93,123 +83,90 @@ body {
     height: 100%;
     backface-visibility: hidden;
     background-color: white;
+    
     /* Subtle border for black pages separation */
-    border: 0.5px solid white; 
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.05); /* Subtle inner shadow */
-    overflow: hidden; /* Ensure content stays within page */
+    border: 0.5px solid white;
+    overflow: hidden;
 }
 
-/* Front face is default */
+/* Front face */
 .page.front {
     z-index: 2;
 }
 
-/* Back face is rotated 180 initially inside the sheet */
+/* Back face rotated */
 .page.back {
     transform: rotateY(180deg);
     z-index: 1;
 }
 
-/* 
-   Flipped State for Sheet
-*/
+/* Flipped State */
 .sheet.flipped {
     transform: rotateY(-180deg);
 }
 
-/* Image styling */
+/* Page Images */
 .page-content {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    pointer-events: none; /* Allow clicks to pass through */
+    pointer-events: none;
 }
 
-/* 
-   Interactive Elements 
-*/
-.interactive-btn, .audio-container, .media-overlay, .fullscreen-play-btn {
-    pointer-events: auto; 
+/* Interactive elements that should accept clicks */
+.audio-container {
+    pointer-events: auto;
 }
 
-/* Media Overlay Generic Styling */
+/* ---- MEDIA OVERLAY FIXED VERSION ---- */
+/* Prevent overlay from blocking page turns */
 .media-overlay {
     position: absolute;
     background: transparent;
     z-index: 20;
+    
+    /* DO NOT EAT ANY CLICKS (critical fix) */
+    pointer-events: none;
+
     display: flex;
     justify-content: center;
     align-items: center;
-    /* Remove any borders from media containers */
-    border: none;
-    outline: none;
 }
 
-/* Page 7 GIF specific cleanup */
-#page7-gif-container img {
-    border: none;
-    outline: none;
+/* Only iframe should receive clicks */
+.media-overlay iframe {
+    pointer-events: auto;
 }
 
-/* Fullscreen Play Button Styling */
-.fullscreen-play-btn {
-    background: rgba(0, 0, 0, 0.6);
-    border: 2px solid white;
-    color: white;
-    font-size: 2rem;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.2s, background 0.3s;
-}
-
-.fullscreen-play-btn:hover {
-    background: rgba(0, 0, 0, 0.8);
-    transform: scale(1.1);
-}
-
-/* 
-   Calculated Positions 
-*/
-
-/* Page 6 Video Container (Centered YouTube, slightly above center) */
+/* Page 6 video */
 #page6-video-container {
     left: 50%;
-    top: 35%; /* Slightly above center (50%) */
+    top: 35%;
     transform: translate(-50%, -50%);
     width: 90%;
     aspect-ratio: 16/10;
-    height: auto;
 }
 
-/* Page 7 Video Container (Centered YouTube) */
+/* Page 7 video */
 #page7-video-container {
     left: 50%;
     top: 75%;
     transform: translate(-50%, -50%);
     width: 90%;
     aspect-ratio: 16/9;
-    height: auto;
 }
 
-/* Page 9 Video Container (Centered YouTube) */
+/* Page 9 video */
 #page9-video-container {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 90%; /* Adjusted width for embedded video */
+    width: 90%;
     aspect-ratio: 16/9;
-    height: auto; /* Height determined by aspect ratio */
 }
 
-/* 
-   Iframe Overlay for Spread 14-15 
-*/
+/* Doljabi iframe overlay */
 .iframe-overlay {
     position: absolute;
     top: 0;
@@ -217,11 +174,10 @@ body {
     width: 100%;
     height: 100%;
     z-index: 2000;
-    background: white; 
-    display: none; 
-    /* White border for spread separation */
-    border: 1px solid white; 
-    box-sizing: border-box; /* Include border in width/height */
+    background: white;
+    display: none;
+
+    border: 1px solid white;
 }
 
 .iframe-overlay.active {
@@ -232,49 +188,4 @@ body {
     width: 100%;
     height: 100%;
     border: none;
-}
-
-/* 
-   Global Fullscreen Video Overlay 
-*/
-.fullscreen-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: black;
-    z-index: 9999;
-    display: none; /* Hidden by default */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.fullscreen-overlay.active {
-    display: flex;
-}
-
-.fullscreen-overlay video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-#close-fullscreen {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.3);
-    border: none;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 10000;
-    border-radius: 5px;
-}
-
-#close-fullscreen:hover {
-    background: rgba(255, 255, 255, 0.5);
 }
