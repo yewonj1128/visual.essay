@@ -9,7 +9,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100dvh; /* 모바일 안전 높이 */
+    height: 100vh;  
     background-color: #000;
     overflow: hidden;
     font-family: sans-serif;
@@ -37,30 +37,28 @@ body {
 .left-arrow { margin-right: 20px; }
 .right-arrow { margin-left: 20px; }
 
-/* ---- RESPONSIVE BOOK ---- */
-/* A4 Ratio: width : height = 2 * 1 : 1.414 */
+/* Book Container */
 .book-container {
     position: relative;
-    aspect-ratio: calc(2 * 1) / 1.414;  /* 펼친 A4 두 장 비율 */
-
-    width: min(95vw, 95vh * (2 / 1.414)); /* 화면 안에서 자동 최대값 */
-    height: auto;
-
+    height: 90vh;
+    width: calc(90vh * 0.70707 * 2); /* A4 aspect ratio × spread */
+    max-width: 95vw;
     perspective: 2000px;
+
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Book fills container exactly */
+/* Book */
 .book {
+    position: relative;
     width: 100%;
     height: 100%;
-    position: relative;
     transform-style: preserve-3d;
 }
 
-/* ---- Sheet ---- */
+/* Sheet */
 .sheet {
     position: absolute;
     top: 0;
@@ -72,11 +70,7 @@ body {
     transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
 }
 
-.sheet.flipped {
-    transform: rotateY(-180deg);
-}
-
-/* ---- Pages ---- */
+/* Page */
 .page {
     position: absolute;
     top: 0;
@@ -92,6 +86,11 @@ body {
 .page.front { z-index: 2; }
 .page.back { transform: rotateY(180deg); }
 
+/* Flipped */
+.sheet.flipped {
+    transform: rotateY(-180deg);
+}
+
 /* Page Images */
 .page-content {
     width: 100%;
@@ -100,18 +99,17 @@ body {
     display: block;
 }
 
-/* Audio should stay clickable */
+/* Audio clickable */
 .audio-container {
     pointer-events: auto;
 }
 
-/* ---- MEDIA OVERLAY ---- */
+/* Media Overlay */
 .media-overlay {
     position: absolute;
-    z-index: 20;
     background: transparent;
+    z-index: 20;
 
-    /* critical fix: overlay는 클릭 안먹음 */
     pointer-events: none;
 
     display: flex;
@@ -119,12 +117,10 @@ body {
     align-items: center;
 }
 
-/* iframe은 클릭 가능 */
 .media-overlay iframe {
     pointer-events: auto;
 }
 
-/* Page-specific positions */
 #page6-video-container {
     left: 50%;
     top: 35%;
@@ -149,7 +145,7 @@ body {
     aspect-ratio: 16/9;
 }
 
-/* ---- Doljabi Iframe ---- */
+/* Doljabi overlay */
 .iframe-overlay {
     position: absolute;
     top: 0;
