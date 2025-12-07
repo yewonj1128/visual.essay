@@ -1,3 +1,8 @@
+// 강제로 전체화면 오버레이 끄기 (오류 방지)
+document.addEventListener("DOMContentLoaded", () => {
+    const fs = document.getElementById("fullscreen-overlay");
+    if (fs) fs.classList.remove("active");
+});
 document.addEventListener('DOMContentLoaded', () => {
     // Configuration
     const totalSheets = 8;
