@@ -14,12 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const doljabiOverlay = document.getElementById('doljabi-overlay');
     const page5Audio = document.getElementById('page5-audio');
 
-    // Fullscreen Video Elements
-    const fullscreenOverlay = document.getElementById('fullscreen-overlay');
-    const fullscreenVideo = document.getElementById('fullscreen-video');
-    const closeFullscreenBtn = document.getElementById('close-fullscreen');
-    const playButtons = document.querySelectorAll('.fullscreen-play-btn');
-
     // --- Z-Index Management ---
     function updateZIndexes() {
         sheets.forEach((sheet, index) => {
