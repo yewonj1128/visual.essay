@@ -1,188 +1,51 @@
-/* Reset and Base Styles */
-* {
-    box-sizing: border-box;
+/* ---- FIX BODY: REMOVE FLEX ---- */
+body {
     margin: 0;
     padding: 0;
-}
-
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100dvh; /* 모바일 안전 높이 */
-    background-color: #000;
+    width: 100vw;
+    height: 100dvh;
+    background: black;
     overflow: hidden;
     font-family: sans-serif;
 }
 
-/* Navigation Arrows */
-.nav-arrow {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 3rem;
-    cursor: pointer;
-    padding: 20px;
-    z-index: 1000;
-    opacity: 0.7;
-    transition: opacity 0.3s, transform 0.2s;
-    user-select: none;
-}
-
-.nav-arrow:hover {
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-.left-arrow { margin-right: 20px; }
-.right-arrow { margin-left: 20px; }
-
-/* ---- GLOBAL RESPONSIVE FIX FOR IOS ---- */
-
-/* 화면 전체를 차지하는 래퍼 */
+/* ---- WRAPPER ---- */
 .page-wrapper {
     width: 100vw;
-    height: 100dvh; /* iOS Safari도 정확하게 계산되는 단위 */
+    height: 100dvh;
+    background: black;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: black;
     overflow: hidden;
 }
 
-/* 책을 감싸는 컨테이너 - 비율 유지용 */
+/* ---- FIX BOOK-CONTAINER ---- */
+/* height 기준으로 비율 유지: 펼친 A4 = width:height = 2.828:1 */
 .book-container {
     position: relative;
 
-    /* 종이책 펼친 비율 = (A4 세로 × 2) / A4 가로 = 2.828 */
-    aspect-ratio: 2.828 / 1;
+    height: min(95dvh, 95vw / 2.828);
+    width: calc(var(--book-height) * 2.828);
+    /* JS에서 height값 넣을 수 없으니 아래에서 다시 계산 */
+}
 
-    /* 화면을 벗어나지 않도록 */
-    width: min(95vw, 95vh * 2.828);
-    height: auto;
+/* JS 없이 width 계산되도록 추가 */
+.book-container {
+    height: min(95dvh, 95vw / 2.828);
+    width: calc(min(95dvh, 95vw / 2.828) * 2.828);
 
     display: flex;
     justify-content: center;
     align-items: center;
-    
+
     perspective: 2000px;
 }
 
-/* 내부 실제 책 오브젝트 */
+/* ---- REAL BOOK ---- */
 .book {
+    width: 100%;
+    height: 100%;
     position: relative;
-    width: 100%;
-    height: 100%;
     transform-style: preserve-3d;
-}
-
-/* ---- Sheet ---- */
-.sheet {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 50%;
-    height: 100%;
-    transform-origin: left center;
-    transform-style: preserve-3d;
-    transition: transform 0.8s cubic-bezier(0.645, 0.045, 0.355, 1);
-}
-
-.sheet.flipped {
-    transform: rotateY(-180deg);
-}
-
-/* ---- Pages ---- */
-.page {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    background-color: white;
-    border: 0.5px solid white;
-    overflow: hidden;
-}
-
-.page.front { z-index: 2; }
-.page.back { transform: rotateY(180deg); }
-
-/* Page Images */
-.page-content {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-/* Audio should stay clickable */
-.audio-container {
-    pointer-events: auto;
-}
-
-/* ---- MEDIA OVERLAY ---- */
-.media-overlay {
-    position: absolute;
-    z-index: 20;
-    background: transparent;
-
-    /* critical fix: overlay는 클릭 안먹음 */
-    pointer-events: none;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* iframe은 클릭 가능 */
-.media-overlay iframe {
-    pointer-events: auto;
-}
-
-/* Page-specific positions */
-#page6-video-container {
-    left: 50%;
-    top: 35%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    aspect-ratio: 16/10;
-}
-
-#page7-video-container {
-    left: 50%;
-    top: 75%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    aspect-ratio: 16/9;
-}
-
-#page9-video-container {
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    aspect-ratio: 16/9;
-}
-
-/* ---- Doljabi Iframe ---- */
-.iframe-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 2000;
-    background: white;
-    display: none;
-}
-
-.iframe-overlay.active {
-    display: block;
-}
-
-.iframe-overlay iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
 }
